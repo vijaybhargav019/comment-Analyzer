@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results</title>
+    <!-- Add the following script tags for Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+</head>
+<body>
+    <!--<h1>Analysis Results for Video: {{ video_url }}</h1>-->
+    <h1>Analysis Results for Video: {{ video_title }}</h1>
+    <p>Average Polarity: {{ sentiment_results.avg_polarity }}</p>
+    
+    <!-- Bar Chart -->
+    <h2>Bar Chart - Comment Sentiments</h2>
+    <canvas id="barChart" width="10px" height="10px"></canvas>
+    
+    <!-- Pie Chart -->
+    <h2>Pie Chart - Sentiment Distribution</h2>
+    <canvas id="pieChart" width="50" height="50"></canvas>
+
+    <!-- JavaScript for rendering charts -->
+    <script>
+        // Bar Chart
+        var ctxBar = document.getElementById('barChart').getContext('2d');
+        var barChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Positive', 'Negative', 'Neutral'],
+                datasets: [{
+                    label: 'Comment Count',
+                    data: [
+                        {{ sentiment_results.positive_count }},
+                        {{ sentiment_results.negative_count }},
+                        {{ sentiment_results.neutral_count }}
+                    ],
+                    backgroundColor: ['blue', 'red', 'grey']
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Pie Chart
+        var ctxPie = document.getElementById('pieChart').getContext('2d');
+        var pieChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Positive', 'Negative', 'Neutral'],
+                datasets: [{
+                    data: [
+                        {{ sentiment_results.positive_count }},
+                        {{ sentiment_results.negative_count }},
+                        {{ sentiment_results.neutral_count }}
+                    ],
+                    backgroundColor: ['blue', 'red', 'grey']
+                }]
+            }
+        });
+    </script>
+    
+    <h2>Positive Comments:</h2>
+    <ul>
+        {% for comment in sentiment_results.positive_comments %}
+            <li>{{ comment }}</li>
+        {% endfor %}
+    </ul>
+    
+    <h2>Negative Comments:</h2>
+    <ul>
+        {% for comment in sentiment_results.negative_comments %}
+            <li>{{ comment }}</li>
+        {% endfor %}
+    </ul>
+    
+    <h2>Neutral Comments:</h2>
+    <ul>
+        {% for comment in sentiment_results.neutral_comments %}
+            <li>{{ comment }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
